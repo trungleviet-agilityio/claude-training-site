@@ -254,6 +254,9 @@ code {
   color: var(--muted);
 }
 
+.version { display: block; margin-top: 6px; font-family: var(--mono); font-size: 12px; }
+.version-warning { display: block; margin-top: 4px; font-family: var(--body); color: var(--ink); }
+
 /* Rendered markdown pages */
 .content { max-width: 760px; }
 .content h1 { margin-bottom: 16px; }

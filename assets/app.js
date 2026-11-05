@@ -12,6 +12,7 @@ const SESSION_COUNT = 15;
 const SAVE_DELAY_MS = 1000;
 const MAX_TICKS = 500;
 const SYNC_PREFIX = "claude-training-sync:";
+const LOCAL_VERSION = "local";
 
 const $ = (id) => document.getElementById(id);
 const VIEWS = ["view-loading", "view-signin", "view-check-email", "view-not-listed", "view-error", "main"];
@@ -20,6 +21,17 @@ function show(id) {
   VIEWS.forEach((view) => {
     $(view).hidden = view !== id;
   });
+}
+
+// A deploy writes content and shells in two steps. A difference means the second step
+// failed, or the browser still holds an old shell.
+function checkVersion(contentVersion) {
+  const shellVersion = body.dataset.version;
+  const warning = $("version-warning");
+  warning.hidden = shellVersion === LOCAL_VERSION || contentVersion === shellVersion;
+  warning.textContent = warning.hidden
+    ? ""
+    : `Course text is version ${contentVersion || "unknown"}. Refresh this page. If this stays, tell your mentor.`;
 }
 
 function showError(text) {
@@ -313,6 +325,7 @@ async function start() {
       }
       $("main").innerHTML = page.data().html;
       document.title = page.data().title;
+      checkVersion(page.data().version);
       progress.init();
       show("main");
     } catch (e) {
