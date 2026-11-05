@@ -24,10 +24,14 @@ function show(id) {
 }
 
 // A deploy writes content and shells in two steps. A difference means the second step
-// failed, or the browser still holds an old shell.
+// failed, or the browser still holds an old shell. An old shell may have no warning
+// element, and this check must never stop the page from loading.
 function checkVersion(contentVersion) {
   const shellVersion = body.dataset.version;
   const warning = $("version-warning");
+  if (!warning) {
+    return;
+  }
   warning.hidden = shellVersion === LOCAL_VERSION || contentVersion === shellVersion;
   warning.textContent = warning.hidden
     ? ""
