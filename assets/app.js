@@ -217,15 +217,26 @@ async function start() {
   }
 
   $("account-button").addEventListener("click", () => setMenuOpen($("account-menu").hidden));
+  const navGroup = document.querySelector(".nav-group");
   document.addEventListener("click", (event) => {
     if (!$("account").contains(event.target)) {
       setMenuOpen(false);
     }
+    if (!navGroup.contains(event.target)) {
+      navGroup.open = false;
+    }
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !$("account-menu").hidden) {
+    if (event.key !== "Escape") {
+      return;
+    }
+    if (!$("account-menu").hidden) {
       setMenuOpen(false);
       $("account-button").focus();
+    }
+    if (navGroup.open) {
+      navGroup.open = false;
+      navGroup.querySelector("summary").focus();
     }
   });
 

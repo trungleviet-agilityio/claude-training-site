@@ -83,6 +83,45 @@ a:focus-visible, input:focus-visible {
   font-weight: 600;
   border-bottom: 2px solid var(--accent);
 }
+.nav-group { position: relative; }
+.nav-group summary {
+  color: var(--muted);
+  cursor: pointer;
+  padding: 2px 0;
+  list-style: none;
+}
+.nav-group summary::-webkit-details-marker { display: none; }
+.nav-group summary::after { content: " \25BE"; }
+.nav-group summary:hover,
+.nav-group[open] summary { color: var(--ink); }
+.nav-group.is-current summary {
+  color: var(--accent);
+  font-weight: 600;
+  border-bottom: 2px solid var(--accent);
+}
+.nav-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 170px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 6px 20px rgba(26, 34, 29, 0.12);
+}
+.nav .nav-menu a {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border-bottom: none;
+}
+.nav .nav-menu a:hover { background: var(--bg); }
 
 /* Type */
 h1, h2, h3 { font-family: var(--display); line-height: 1.15; text-wrap: balance; }
@@ -313,6 +352,7 @@ body[data-page^="schedule/session-"] .content h1 + p { color: var(--muted); font
   }
   .topbar { margin-bottom: 28px; }
   .nav { order: 3; flex-basis: 100%; }
+  .nav-menu { left: auto; right: 0; }
   .stack { gap: 40px; }
   .stat { flex-basis: 40%; }
 }
