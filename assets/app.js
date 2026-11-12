@@ -38,6 +38,16 @@ function checkVersion(contentVersion) {
     : `Course text is version ${contentVersion || "unknown"}. Refresh this page. If this stays, tell your mentor.`;
 }
 
+// Diagrams are optional: if they fail, the page still works and shows their text.
+function drawDiagrams(root) {
+  if (!root.querySelector("code.language-mermaid")) {
+    return;
+  }
+  import(`./diagrams.js?v=${body.dataset.version}`)
+    .then((diagrams) => diagrams.renderDiagrams(root))
+    .catch(() => {});
+}
+
 function showError(text) {
   $("error-message").textContent = text;
   show("view-error");
@@ -332,6 +342,7 @@ async function start() {
       checkVersion(page.data().version);
       progress.init();
       show("main");
+      drawDiagrams($("main"));
     } catch (e) {
       if (!isPublic) {
         showError("We could not load this page. Check your connection and try again.");
