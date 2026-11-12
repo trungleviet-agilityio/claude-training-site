@@ -418,44 +418,75 @@ body[data-page^="schedule/session-"] .content h1 + p { color: var(--muted); font
 .content .map-branch > ul > li > ul { padding-left: 18px; font-size: 15px; }
 .content .map-branch > ul > li > ul > li::marker { color: var(--branch); }
 
-/* Concept pages: a topic sidebar beside the text */
+/* Module pages: one fixed frame. Sidebar 232px, gap 48px, text up to 760px.
+   The page scrolls; the sidebar stays in place and scrolls on its own. */
+.page:has(.concept-layout) { max-width: 1200px; }
 .concept-layout {
   display: grid;
-  grid-template-columns: 190px minmax(0, 760px);
-  gap: 36px;
+  grid-template-columns: 232px minmax(0, 760px);
+  gap: 48px;
   align-items: start;
 }
 .concept-nav {
   position: sticky;
-  top: 20px;
+  top: 24px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding-right: 8px;
+  border-right: 1px solid var(--line);
   font-size: 14.5px;
 }
-.concept-nav a {
-  padding: 6px 10px;
+.concept-nav a,
+.topic-toggle nav a {
+  padding: 6px 12px;
   border-left: 2px solid var(--line);
+  border-radius: 0 6px 6px 0;
   color: var(--ink);
   text-decoration: none;
 }
-.concept-nav a:hover { border-left-color: var(--accent); color: var(--accent); }
-.concept-nav a[aria-current="page"] {
+.concept-nav a:hover,
+.topic-toggle nav a:hover { border-left-color: var(--accent); color: var(--accent); }
+.concept-nav a[aria-current="page"],
+.topic-toggle nav a[aria-current="page"] {
   border-left-color: var(--accent);
   background: var(--chip-bg);
   color: var(--accent);
   font-weight: 600;
 }
-.concept-nav .concept-map { border-left: 0; padding-left: 0; margin-bottom: 8px; color: var(--muted); }
-.concept-nav .concept-map::before { content: "\2190  "; }
 .concept-group {
-  margin: 10px 0 4px;
+  margin: 14px 0 4px;
   font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
 }
+.topic-toggle { display: none; }
+
+/* "On this page" links above the first section */
+.on-this-page {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 28px;
+  font-size: 13.5px;
+}
+.on-this-page span { font-family: var(--mono); font-size: 12px; text-transform: uppercase; color: var(--muted); }
+.on-this-page a {
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.on-this-page a:hover { border-color: var(--accent); color: var(--accent); }
+.concept h2 { scroll-margin-top: 80px; }
+/* Long code scrolls inside its box */
+.concept pre { max-height: 360px; overflow: auto; }
 
 /* Diagrams drawn by diagrams.js. Wide ones scroll inside their box. */
 .content .diagram {
@@ -484,22 +515,48 @@ body[data-page^="schedule/session-"] .content h1 + p { color: var(--muted); font
 .content details.answer[open] summary { margin-bottom: 6px; }
 .content details.answer > :last-child { margin-bottom: 0; }
 
-/* Narrow screens: the sidebar becomes a row of topic links above the text */
+/* Narrow screens: the sidebar becomes a sticky "Topics" toggle above the text */
 @media (max-width: 900px) {
   .concept-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-  .concept-nav {
-    position: static;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-    padding-bottom: 14px;
+  .concept-nav, .on-this-page { display: none; }
+  .topic-toggle {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin: 0 -16px;
+    padding: 8px 16px;
+    background: var(--bg);
     border-bottom: 1px solid var(--line);
   }
-  .concept-nav a { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
-  .concept-nav a[aria-current="page"] { border-color: var(--accent); }
-  .concept-nav .concept-map { flex-basis: 100%; margin-bottom: 0; border: 0; padding: 0; }
-  .concept-group { margin: 0 2px 0 0; }
+  .topic-toggle summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    cursor: pointer;
+    list-style: none;
+  }
+  .topic-toggle summary::-webkit-details-marker { display: none; }
+  .topic-toggle summary::after { content: "\25BE"; margin-left: auto; color: var(--muted); }
+  .topic-toggle[open] summary { border-color: var(--accent); }
+  .topic-toggle[open] summary::after { content: "\25B4"; }
+  .topic-label { font-family: var(--mono); font-size: 12px; text-transform: uppercase; color: var(--muted); }
+  .topic-here { font-weight: 600; }
+  .topic-count { color: var(--muted); font-size: 13px; }
+  .topic-toggle nav {
+    display: flex;
+    flex-direction: column;
+    max-height: 60vh;
+    overflow-y: auto;
+    margin-top: 8px;
+    padding: 4px 0 12px;
+  }
+  .topic-toggle nav a { min-height: 44px; display: flex; align-items: center; }
 }
 
 @media (max-width: 600px) {
