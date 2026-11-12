@@ -3,17 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Content Security Policy: the browser loads only from the origins listed here.
+  script-src: our files, the Firebase SDK, Mermaid at its pinned version, and the Google
+    script that Firebase Auth uses for its sign-in frame. No inline scripts.
+  style-src: 'unsafe-inline' only because Mermaid puts a <style> element inside each diagram.
+  connect-src: Firebase Auth (identitytoolkit, securetoken) and Firestore.
+  frame-src: the Firebase Auth domain, for the Google sign-in frame. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com/firebasejs/ https://cdn.jsdelivr.net/npm/mermaid@12.2.0/ https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com; frame-src https://claude-training-progress.firebaseapp.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="description" content="Learn to use Claude as a professional working tool.">
 <meta name="robots" content="noindex">
 <title>Claude Training</title>
-<script src="../assets/theme.js?v=v2026.11.12.6"></script>
+<script src="../assets/theme.js?v=v2026.11.12.7"></script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230e6b4f'/%3E%3Cpath d='M9 17l5 5 9-11' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<link rel="stylesheet" href="../assets/styles.css?v=v2026.11.12.6">
+<link rel="stylesheet" href="../assets/styles.css?v=v2026.11.12.7">
 </head>
-<body data-page="schedule/session-11" data-doc="schedule--session-11" data-public="false" data-version="v2026.11.12.6">
+<body data-page="schedule/session-11" data-doc="schedule--session-11" data-public="false" data-version="v2026.11.12.7" data-sessions="15">
 <a class="skip" href="#main">Skip to content</a>
 <div class="page">
   <header class="topbar">
@@ -104,9 +111,9 @@
   </section>
 
   <main id="main" hidden></main>
-  <footer class="footer"><a href="../privacy.html">Privacy</a>. Course names change fast; re-check <a href="https://academy.claude.com">academy.claude.com</a> and <a href="https://code.claude.com/docs">code.claude.com/docs</a> before each phase.<span class="version"><span id="site-version">prod v2026.11.12.6 (7e319b8)</span><span class="version-warning" id="version-warning" role="status" hidden></span></span></footer>
+  <footer class="footer"><a href="../privacy.html">Privacy</a>. Course names change fast; re-check <a href="https://academy.claude.com">academy.claude.com</a> and <a href="https://code.claude.com/docs">code.claude.com/docs</a> before each phase.<span class="version"><span id="site-version">prod v2026.11.12.7 (8452ae9)</span><span class="version-warning" id="version-warning" role="status" hidden></span></span></footer>
 </div>
-<script src="../assets/progress.js?v=v2026.11.12.6"></script>
-<script type="module" src="../assets/app.js?v=v2026.11.12.6"></script>
+<script src="../assets/progress.js?v=v2026.11.12.7"></script>
+<script type="module" src="../assets/app.js?v=v2026.11.12.7"></script>
 </body>
 </html>

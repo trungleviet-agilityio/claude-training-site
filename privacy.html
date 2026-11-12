@@ -3,17 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Content Security Policy: the browser loads only from the origins listed here.
+  script-src: our files, the Firebase SDK, Mermaid at its pinned version, and the Google
+    script that Firebase Auth uses for its sign-in frame. No inline scripts.
+  style-src: 'unsafe-inline' only because Mermaid puts a <style> element inside each diagram.
+  connect-src: Firebase Auth (identitytoolkit, securetoken) and Firestore.
+  frame-src: the Firebase Auth domain, for the Google sign-in frame. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com/firebasejs/ https://cdn.jsdelivr.net/npm/mermaid@12.2.0/ https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com; frame-src https://claude-training-progress.firebaseapp.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="description" content="Learn to use Claude as a professional working tool.">
 <meta name="robots" content="noindex">
 <title>Privacy | Claude Training</title>
-<script src="assets/theme.js?v=v2026.11.12.6"></script>
+<script src="assets/theme.js?v=v2026.11.12.7"></script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230e6b4f'/%3E%3Cpath d='M9 17l5 5 9-11' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=v2026.11.12.6">
+<link rel="stylesheet" href="assets/styles.css?v=v2026.11.12.7">
 </head>
-<body data-page="privacy" data-doc="privacy" data-public="true" data-version="v2026.11.12.6">
+<body data-page="privacy" data-doc="privacy" data-public="true" data-version="v2026.11.12.7" data-sessions="15">
 <a class="skip" href="#main">Skip to content</a>
 <div class="page">
   <header class="topbar">
@@ -113,14 +120,18 @@
 </ul>
 <p>Your theme choice (light or dark) stays in your browser only. We do not receive it.</p>
 <p>We do not use analytics or advertising on this site.</p>
-<p>Pages with diagrams load a drawing tool (Mermaid) from jsDelivr, a public file
-host. Like any website, it sees your IP address. We send it no other data.</p>
+<p>Two outside services send files to your browser. Like any website, they see your
+IP address. We send them no other data.</p>
+<ul>
+<li><strong>Google Fonts</strong> sends the fonts on every page.</li>
+<li><strong>jsDelivr</strong>, a public file host, sends a drawing tool (Mermaid) on pages with diagrams.</li>
+</ul>
 <h2>Why we save it</h2>
 <ul>
 <li>To let you continue on any device.</li>
-<li>To let your mentor see your progress.</li>
+<li>To let the mentors see your progress.</li>
 </ul>
-<p>Only you and your mentor can read your progress. Your mentor adds your email to the class list.</p>
+<p>Only you and the mentors on the class list can read your progress. A mentor adds your email to the class list.</p>
 <h2>Where it is stored</h2>
 <p>We use Firebase, a Google service.</p>
 <ul>
@@ -133,9 +144,9 @@ host. Like any website, it sees your IP address. We send it no other data.</p>
 <h2>Delete your data</h2>
 <p>Sign in, then press the button below. You can also ask your mentor to delete it.</p>
 <div class="delete-data" id="delete-data" hidden><button class="btn btn-quiet" type="button" id="delete-my-data">Delete my data</button><p class="fine" id="delete-status" role="status"></p></div></article></main>
-  <footer class="footer"><a href="privacy.html">Privacy</a>. Course names change fast; re-check <a href="https://academy.claude.com">academy.claude.com</a> and <a href="https://code.claude.com/docs">code.claude.com/docs</a> before each phase.<span class="version"><span id="site-version">prod v2026.11.12.6 (7e319b8)</span><span class="version-warning" id="version-warning" role="status" hidden></span></span></footer>
+  <footer class="footer"><a href="privacy.html">Privacy</a>. Course names change fast; re-check <a href="https://academy.claude.com">academy.claude.com</a> and <a href="https://code.claude.com/docs">code.claude.com/docs</a> before each phase.<span class="version"><span id="site-version">prod v2026.11.12.7 (8452ae9)</span><span class="version-warning" id="version-warning" role="status" hidden></span></span></footer>
 </div>
-<script src="assets/progress.js?v=v2026.11.12.6"></script>
-<script type="module" src="assets/app.js?v=v2026.11.12.6"></script>
+<script src="assets/progress.js?v=v2026.11.12.7"></script>
+<script type="module" src="assets/app.js?v=v2026.11.12.7"></script>
 </body>
 </html>

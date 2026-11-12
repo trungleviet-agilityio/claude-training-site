@@ -8,9 +8,14 @@ const isMentorPage = pageDoc === "mentor";
 const base = document.getElementById("main-nav").dataset.base;
 const progress = window.ClaudeTrainingProgress;
 
-const SESSION_COUNT = 15;
+// build.py writes the number of sessions (LAST_SESSION) on <body>.
+const SESSION_COUNT = Number(body.dataset.sessions);
 const SAVE_DELAY_MS = 1000;
+// Same limit as `ticks.size() <= 500` in validTicks() in firebase/firestore.rules.
 const MAX_TICKS = 500;
+// Same limit as `data.name.size() <= 200` in firebase/firestore.rules.
+const MAX_NAME = 200;
+const MIN_PASSWORD = 8;
 const SYNC_PREFIX = "claude-training-sync:";
 const LOCAL_VERSION = "local";
 
@@ -72,7 +77,7 @@ const AUTH_MESSAGES = {
   "auth/user-not-found": "That email or password is not correct.",
   "auth/invalid-email": "Please enter a valid email address.",
   "auth/email-already-in-use": "This email already has an account. Sign in instead.",
-  "auth/weak-password": "Use at least 8 characters.", // pragma: allowlist secret
+  "auth/weak-password": `Use at least ${MIN_PASSWORD} characters.`, // pragma: allowlist secret
   "auth/too-many-requests": "Too many attempts. Please wait a few minutes and try again.",
   "auth/network-request-failed": "We could not reach the sign-in service. Check your connection and try again.",
 };
@@ -81,9 +86,11 @@ function authMessage(error) {
   return AUTH_MESSAGES[error.code] || "We could not complete that. Please try again.";
 }
 
-function setAuthMessage(text) {
+// An error shows in the danger color; a note, such as "reset link sent", does not.
+function setAuthMessage(text, isError = false) {
   $("auth-message").textContent = text || "";
   $("auth-message").hidden = !text;
+  $("auth-message").classList.toggle("is-error", Boolean(text) && isError);
 }
 
 const FORM_MODES = {
@@ -156,7 +163,7 @@ async function start() {
     try {
       await store.setDoc(progressRef(syncUser), {
         email: syncUser.email.toLowerCase(),
-        name: (syncUser.displayName || "").slice(0, 200),
+        name: (syncUser.displayName || "").slice(0, MAX_NAME),
         ticks: progress.keys().slice(0, MAX_TICKS),
         updatedAt: store.serverTimestamp(),
       });
@@ -287,62 +294,81 @@ async function start() {
     nav.appendChild(link);
   }
 
+  // Access step: what the signed-in person may see. It reads the class list, so it
+  // can throw on a network error.
+  async function access(user) {
+    if (!user) {
+      return "signed-out";
+    }
+    if (!user.emailVerified) {
+      return "unverified";
+    }
+    const roster = await store.getDoc(store.doc(db, "roster", user.email.toLowerCase()));
+    if (!roster.exists()) {
+      return "not-listed";
+    }
+    return roster.data().role === "mentor" ? "mentor" : "ok";
+  }
+
+  async function loadPage(user) {
+    await syncProgress(user);
+    if (isMentorPage) {
+      show("main");
+      await renderMentor();
+      return;
+    }
+    const page = await store.getDoc(store.doc(db, "pages", pageDoc));
+    if (!page.exists()) {
+      showError("This page is not available yet. Please tell your mentor.");
+      return;
+    }
+    $("main").innerHTML = page.data().html;
+    document.title = page.data().title;
+    checkVersion(page.data().version);
+    progress.init();
+    show("main");
+    drawDiagrams($("main"));
+  }
+
+  // Render step: show the view for an access state. A public page is already
+  // showing, so only the nav and the mentor link change there.
+  async function render(state, user) {
+    if (state === "ok" || state === "mentor") {
+      $("main-nav").hidden = false;
+      if (state === "mentor") {
+        addMentorLink();
+      }
+      if (!isPublic) {
+        await loadPage(user);
+      }
+      return;
+    }
+    if (isPublic) {
+      return;
+    }
+    if (state === "signed-out") {
+      $("main-nav").hidden = true;
+      show("view-signin");
+    } else if (state === "unverified") {
+      $("check-email-address").textContent = user.email;
+      show("view-check-email");
+    } else if (state === "not-listed") {
+      $("not-listed-address").textContent = user.email;
+      show("view-not-listed");
+    }
+  }
+
   async function route() {
     const user = a.currentUser;
     setAccount(user);
     if (isPublic) {
       $("delete-data").hidden = !user;
       show("main");
-      if (!user) {
-        return;
-      }
-    } else if (!user) {
-      $("main-nav").hidden = true;
-      show("view-signin");
-      return;
-    } else {
+    } else if (user) {
       show("view-loading");
     }
-    if (!user.emailVerified) {
-      if (!isPublic) {
-        $("check-email-address").textContent = user.email;
-        show("view-check-email");
-      }
-      return;
-    }
     try {
-      const roster = await store.getDoc(store.doc(db, "roster", user.email.toLowerCase()));
-      if (!roster.exists()) {
-        if (!isPublic) {
-          $("not-listed-address").textContent = user.email;
-          show("view-not-listed");
-        }
-        return;
-      }
-      $("main-nav").hidden = false;
-      if (roster.data().role === "mentor") {
-        addMentorLink();
-      }
-      if (isPublic) {
-        return;
-      }
-      await syncProgress(user);
-      if (isMentorPage) {
-        show("main");
-        await renderMentor();
-        return;
-      }
-      const page = await store.getDoc(store.doc(db, "pages", pageDoc));
-      if (!page.exists()) {
-        showError("This page is not available yet. Please tell your mentor.");
-        return;
-      }
-      $("main").innerHTML = page.data().html;
-      document.title = page.data().title;
-      checkVersion(page.data().version);
-      progress.init();
-      show("main");
-      drawDiagrams($("main"));
+      await render(await access(user), user);
     } catch (e) {
       if (!isPublic) {
         showError("We could not load this page. Check your connection and try again.");
@@ -355,7 +381,7 @@ async function start() {
     try {
       await action();
     } catch (e) {
-      setAuthMessage(authMessage(e));
+      setAuthMessage(authMessage(e), true);
     }
   }
 
@@ -377,8 +403,8 @@ async function start() {
         await auth.sendPasswordResetEmail(a, email);
         setAuthMessage("If this email has an account, a reset link is on its way.");
       } else if (formMode === "signup") {
-        if (password.length < 8) {
-          setAuthMessage("Use at least 8 characters.");
+        if (password.length < MIN_PASSWORD) {
+          setAuthMessage(AUTH_MESSAGES["auth/weak-password"], true);
           return;
         }
         const created = await auth.createUserWithEmailAndPassword(a, email, password);
@@ -390,15 +416,19 @@ async function start() {
   });
 
   $("email-confirmed").addEventListener("click", async () => {
-    await a.currentUser.reload();
-    if (a.currentUser.emailVerified) {
-      // The saved token still says "not verified" until it is refreshed.
-      await a.currentUser.getIdToken(true);
-      route();
-    } else {
+    try {
+      await a.currentUser.reload();
+      if (a.currentUser.emailVerified) {
+        // The saved token still says "not verified" until it is refreshed.
+        await a.currentUser.getIdToken(true);
+        route();
+        return;
+      }
       $("check-email-message").textContent = "We do not see the confirmation yet. Open the link in the email first.";
-      $("check-email-message").hidden = false;
+    } catch (e) {
+      $("check-email-message").textContent = authMessage(e);
     }
+    $("check-email-message").hidden = false;
   });
 
   $("email-resend").addEventListener("click", async () => {
