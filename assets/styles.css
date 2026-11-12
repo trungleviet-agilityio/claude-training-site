@@ -373,6 +373,51 @@ body[data-page^="schedule/session-"] .content h1 + p { color: var(--muted); font
 .pager a span { display: block; font-family: var(--mono); font-size: 12px; color: var(--muted); font-weight: 400; }
 .pager .next { text-align: right; }
 
+/* Module map: one branch per level, drawn as a tree from the list markup */
+.map-branch { --branch: var(--accent); margin: 32px 0 0; }
+.map-applied { --branch: var(--amber); }
+.map-advanced { --branch: var(--muted); }
+.content .map-branch h2 {
+  display: inline-block;
+  margin: 0;
+  padding: 4px 14px;
+  border: 2px solid var(--branch);
+  border-radius: 999px;
+  color: var(--branch);
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.content .map-branch > p {
+  margin: 0 0 0 16px;
+  padding: 10px 0 4px 22px;
+  border-left: 2px solid var(--branch);
+  color: var(--muted);
+}
+.content .map-branch > ul { list-style: none; margin: 0 0 0 16px; padding: 10px 0 0; }
+.content .map-branch > ul > li {
+  position: relative;
+  margin: 0;
+  padding: 0 0 14px 24px;
+  border-left: 2px solid var(--branch);
+}
+.content .map-branch > ul > li:last-child { border-left-color: transparent; padding-bottom: 0; }
+.content .map-branch > ul > li::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: 0;
+  width: 16px;
+  height: 0.8em;
+  border-left: 2px solid var(--branch);
+  border-bottom: 2px solid var(--branch);
+  border-bottom-left-radius: 6px;
+}
+.content .map-branch > ul > li > strong { color: var(--branch); }
+.content .map-branch > ul > li > ul { padding-left: 18px; font-size: 15px; }
+.content .map-branch > ul > li > ul > li::marker { color: var(--branch); }
+
 @media (max-width: 600px) {
   .page {
     padding-left: max(16px, env(safe-area-inset-left, 0px));
